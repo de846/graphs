@@ -1,12 +1,21 @@
 #!/usr/bin/env python3
 import pprint as pp
 
-
 class Node(object):
     def __init__(self, value):
         self._value = value
         self._handled = False
         self._pred = None
+        self._neighbors = []
+
+    def _add_neighbor(self, other_node):
+        self._neighbors.append(other_node)
+
+    def get_neighbors(self):
+        if self._neighbors:
+            return self._neighbors
+        else:
+            return None
 
     @property
     def value(self):
@@ -42,11 +51,39 @@ class Node(object):
     def __repr__(self):
         return "Node({})".format(self._value)
 
+class Edge(object):
+    def __init__(self, u=None, v=None, weight=1.0):
+        self._u = u
+        self._v = v
+        self._weight = weight
+        self._u._add_neighbor(self._v)
+
+    @property
+    def u(self):
+        return self._u
+
+    @property
+    def v(self):
+        return self._v
+
+    @property
+    def weight(self):
+        return self._weight
+
+    @weight.setter
+    def weight(self, value):
+        if value >= 0.0:
+            self._weight = value
+
+    def __repr__(self):
+        return "Edge({}, {}, {})".format(self._u, self._v, self._weight)
+
+    def __str__(self):
+        return str("{}, {}".format(self._u, self._v))
 
 class Graph(object):
     def __init__(self, data, directed=False):
-        self._nodes = self._add_nodes(data)
-        self._edges = self._gen_adj_list(data)
+        self._nodes, self._edges = self._add_nodes(data)
         self._directed = directed
 
     def _add_nodes(self, data):
@@ -56,37 +93,27 @@ class Graph(object):
         :return: dict object with node data searchable by integer
         """
         nodes = {}
-        for node_value in data:
-            nodes[node_value] = {}
-            nodes[node_value]["node_obj"] = Node(node_value)
-            nodes[node_value]["node_edges"] = []
-        return nodes
+        edge_list = []
+        for node in data:
+            if node not in nodes:
+                nodes[node] = Node(node)
+            for node_edges in data[node]:
+                if node_edges not in nodes:
+                    nodes[node_edges] = Node(node_edges)
+                edge_list.append(Edge(nodes[node], nodes[node_edges]))
+        return nodes, edge_list
 
-    def _gen_adj_list(self, data):
-        """
-        This private method will create the adjacency list and store them easily in the _edges attribute,
-        and also within the _nodes dict so it remains easily associated with the Node object.
-        :param data: input dict data passed to Graph to init
-        :return: list object with edge data tuples
-        """
-        edges = []
-        for edge in data:
-            for edge_peer in data[edge]:
-                # ensure that peer exists before making an edge
-                if edge_peer in self._nodes.keys():
-                    edges.append((edge, edge_peer))
-                    self._nodes[edge]["node_edges"].append(edge_peer)
-                else:
-                    print("peer {} doesn't exist.".format(edge_peer))
-        return edges
+    @property
+    def nodes(self):
+        return self._nodes
 
     @property
     def edges(self):
         return self._edges
 
     @property
-    def nodes(self):
-        return self._nodes
+    def is_directed(self):
+        return self._directed
 
     def __len__(self):
         """
@@ -114,11 +141,3 @@ if __name__ == "__main__":
     }
 
     g = Graph(graph_data)
-
-    # print the edges of our graph (adjacency list)
-    print("edges of g:")
-    print(g.edges)
-
-    print("\nnodes of g:")
-    gnodes = g.nodes
-    pp.pprint(gnodes)
