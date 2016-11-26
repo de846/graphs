@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import pprint as pp
 
 
 class Node(object):
@@ -71,9 +72,12 @@ class Graph(object):
         edges = []
         for edge in data:
             for edge_peer in data[edge]:
+                # ensure that peer exists before making an edge
                 if edge_peer in self._nodes.keys():
                     edges.append((edge, edge_peer))
                     self._nodes[edge]["node_edges"].append(edge_peer)
+                else:
+                    print("peer {} doesn't exist.".format(edge_peer))
         return edges
 
     @property
@@ -111,13 +115,10 @@ if __name__ == "__main__":
 
     g = Graph(graph_data)
 
-    print("size of graph g")
-    print(len(g))
-
     # print the edges of our graph (adjacency list)
     print("edges of g:")
     print(g.edges)
 
     print("\nnodes of g:")
     gnodes = g.nodes
-    print(gnodes)
+    pp.pprint(gnodes)
