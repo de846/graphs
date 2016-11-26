@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+
 class Node(object):
     def __init__(self, value):
         self._value = value
@@ -112,7 +113,7 @@ if __name__ == "__main__":
     print("size of graph g")
     print(len(g))
 
-    # print the edges of our graph (adjaceny list)
+    # print the edges of our graph (adjacency list)
     print("edges of g:")
     print(g.edges)
 
