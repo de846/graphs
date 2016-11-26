@@ -4,6 +4,7 @@ class Node(object):
     def __init__(self, value):
         self._value = value
         self._handled = False
+        self._pred = None
 
     @property
     def value(self):
@@ -24,6 +25,14 @@ class Node(object):
         elif self._handled:
             print("This node is node handled - can't unhandle a node.")
             return
+
+    @property
+    def pred(self):
+        return self._pred
+
+    @pred.setter
+    def pred(self, node):
+        self._pred = node
 
     def __str__(self):
         return str(self._value)
