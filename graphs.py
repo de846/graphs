@@ -47,6 +47,11 @@ class Graph(object):
         self._edges = self._gen_adj_list(data)
 
     def _add_nodes(self, data):
+        """
+        This private method will create a dictionary of nodes for use with graph.
+        :param data: input dict data passed to Graph to init
+        :return: dict object with node data searchable by integer
+        """
         nodes = {}
         for node_value in data:
             nodes[node_value] = {}
@@ -55,6 +60,12 @@ class Graph(object):
         return nodes
 
     def _gen_adj_list(self, data):
+        """
+        This private method will create the adjacency list and store them easily in the _edges attribute,
+        and also within the _nodes dict so it remains easily associated with the Node object.
+        :param data: input dict data passed to Graph to init
+        :return: list object with edge data tuples
+        """
         edges = []
         for edge in data:
             for edge_peer in data[edge]:
@@ -71,8 +82,12 @@ class Graph(object):
     def nodes(self):
         return self._nodes
 
-    # def __str__(self):
-        # return len(self)
+    def __len__(self):
+        """
+        Length of Graph should be quantity of Nodes
+        :return: count of nodes
+        """
+        return len(self._nodes)
 
 
 if __name__ == "__main__":
@@ -93,15 +108,14 @@ if __name__ == "__main__":
     }
 
     g = Graph(graph_data)
-    print(len(graph_data))
+
+    print("size of graph g")
+    print(len(g))
 
     # print the edges of our graph (adjaceny list)
     print("edges of g:")
     print(g.edges)
 
-    print("\nlooped nodes of g:")
+    print("\nnodes of g:")
     gnodes = g.nodes
-    for gnode in gnodes:
-        print(gnode)
-    print("\nstr/repr of graph.nodes")
     print(gnodes)
