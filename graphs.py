@@ -19,9 +19,9 @@ class Node(object):
 
     @handled.setter
     def handled(self, value):
-        if value == True:
+        if value:
             self._handled = True
-        elif self._handled == True:
+        elif self._handled:
             print("This node is node handled - can't unhandle a node.")
             return
 
@@ -31,25 +31,27 @@ class Node(object):
     def __repr__(self):
         return "Node({})".format(self._value)
 
+
 class Graph(object):
     def __init__(self, data):
         self._nodes = self._add_nodes(data)
         self._edges = self._gen_adj_list(data)
 
     def _add_nodes(self, data):
-        nodes = set()
+        nodes = {}
         for node_value in data:
-            nodes.add(Node(node_value))
+            nodes[node_value] = {}
+            nodes[node_value]["node_obj"] = Node(node_value)
+            nodes[node_value]["node_edges"] = []
         return nodes
 
     def _gen_adj_list(self, data):
         edges = []
         for edge in data:
             for edge_peer in data[edge]:
-                for known_node in self._nodes:
-                    if edge_peer == known_node.value:
-                        edges.append((edge, edge_peer))
-                        continue
+                if edge_peer in self._nodes.keys():
+                    edges.append((edge, edge_peer))
+                    self._nodes[edge]["node_edges"].append(edge_peer)
         return edges
 
     @property
