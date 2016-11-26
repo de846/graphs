@@ -7,12 +7,23 @@ class Node(object):
 
 class Graph(object):
     def __init__(self, data):
-        for node in data:
-            print(node)
-            print(data[node])
+        self._edges = Graph.gen_adj_list(data)
+
+    @classmethod
+    def gen_adj_list(cls, data):
+        edges = []
+        for edge in data:
+            for edge_peer in data[edge]:
+                edges.append((edge, edge_peer))
+        return edges
+
+    def edges(self):
+        return self._edges
 
 
 if __name__ == "__main__":
+
+    # sample graph data from original course implementation to compare
     graph_data = {1: [2, 3, 4],
                   2: [9, 10],
                   3: [7, 8],
@@ -26,5 +37,8 @@ if __name__ == "__main__":
                   11: [],
                   12: [],
     }
-    print(graph_data)
+
     g = Graph(graph_data)
+
+    # print the edges of our graph (adjaceny list)
+    print(g.edges())
