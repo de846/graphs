@@ -43,9 +43,10 @@ class Node(object):
 
 
 class Graph(object):
-    def __init__(self, data):
+    def __init__(self, data, directed=False):
         self._nodes = self._add_nodes(data)
         self._edges = self._gen_adj_list(data)
+        self._directed = directed
 
     def _add_nodes(self, data):
         """
