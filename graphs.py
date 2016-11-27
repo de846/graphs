@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 import pprint as pp
 
+
 class Node(object):
     """
     Node object which has a value, a handler, a predecessor, and peer awareness.
     """
+
     def __init__(self, value):
         self._value = value
-        self._handled = False
+        self._white = True
+        self._gray = False
+        self._black = False
         self._pred = None
         self._neighbors = []
         self._distance = 0
@@ -55,24 +59,35 @@ class Node(object):
         print("Unable to change value of node once set")
 
     @property
-    def handled(self):
-        """
-        Is this Node handled yet?
-        :return: boolean
-        """
-        return self._handled
+    def gray(self):
+        return self._gray
 
-    @handled.setter
-    def handled(self, value):
+    @gray.setter
+    def gray(self, value):
         if value:
-            self._handled = True
-        elif self._handled:
-            print("This node is node handled - can't unhandle a node.")
-            return
+            self._gray = True
+            self._white = False
+        elif self._gray:
+            print("Can not un-gray a Node.")
+
+    @property
+    def black(self):
+        return self._black
+
+    @black.setter
+    def black(self, value):
+        if value:
+            self._black = True
+            self._white = False
+        elif self._black:
+            print("Can not un-black a Node.")
 
     @property
     def pred(self):
-        return self._pred
+        if self._pred == self:
+            return -1
+        else:
+            return self._pred
 
     @pred.setter
     def pred(self, node):
@@ -88,10 +103,12 @@ class Node(object):
     def __repr__(self):
         return "Node({})".format(self._value)
 
+
 class Edge(object):
     """
     Edge object which stores left and right (u, v) pair, and weight.
     """
+
     def __init__(self, u=None, v=None, weight=1.0):
         self._u = u
         self._v = v
@@ -136,10 +153,12 @@ class Edge(object):
     def __str__(self):
         return str("{}, {}".format(self._u, self._v))
 
+
 class Graph(object):
     """
     Main Graph object to organize Nodes and Edges.
     """
+
     def __init__(self, data, directed=False):
         self._nodes, self._edges = self._add_nodes(data)
         self._directed = directed
@@ -197,35 +216,33 @@ class Graph(object):
         current = self._nodes[starting_node]
         if current:
             print("Starting BFS at Node {}".format(current))
-            for node in self._nodes:
+            stack.append(current)
+            while len(stack) > 0:
                 for edge in self._edges:
                     u = edge.u
                     v = edge.v
-                    print("stack: {}".format(stack))
-                    if len(stack) >= 1:
-                        for stack_node in range(len(stack)):
-                            stack_node = stack.pop()
-                            stack_node.handled = True
-                            stack_node.pred = current
-                            stack_node.distance = current.distance + 1
-                            print("Visited Node {}, with pred {}, and distance {}.".format(stack_node, stack_node.pred, stack_node.distance))
                     if current == u:
-                        if not u.handled:
-                            print("Found {} on left in Edge {}".format(u, edge))
+                        if not v.black:
+                            v.distance = current.distance + 1
                             stack.append(v)
                     if current == v:
-                        if not v.handled:
-                            print("Found {} on right of Edge {}".format(v, edge))
+                        if not u.black:
+                            u.distance = current.distance + 1
                             stack.append(u)
 
-
-
-
-
+                if len(stack) > 0:
+                    for stack_node in stack:
+                        if not stack_node.gray:
+                            stack_node.pred = current
+                            stack_node.gray = True
+                            print("Visited Node {}, with pred {}, and distance {}.".format(stack_node,
+                                                                                           stack_node.pred,
+                                                                                           stack_node.distance))
+                    current.black = True
+                    current = stack.pop(0)
 
 
 if __name__ == "__main__":
-
     # sample graph data from original course implementation to compare
     graph_data = {1: [2, 3, 4],
                   2: [9, 10],
@@ -239,7 +256,7 @@ if __name__ == "__main__":
                   10: [11, 12],
                   11: [],
                   12: [],
-    }
+                  }
 
     g = Graph(graph_data)
-    g.bfs(2)
+    g.bfs(12)
