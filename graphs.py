@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-import pprint as pp
 
 
 class Node(object):
     """
-    Node object which has a value, a handler, a predecessor, and peer awareness.
+    Node object which has a value, colors to determine at what stage it
+    has been inspected, a predecessor, distance from origin vertex,
+    and peer awareness.
     """
 
     def __init__(self, value):
@@ -44,6 +45,11 @@ class Node(object):
 
     @distance.setter
     def distance(self, value):
+        """
+        This should be an integer of the distance from the Graph source
+        :param value: int
+        :return: None
+        """
         self._distance = value
 
     @property
@@ -67,8 +73,8 @@ class Node(object):
         if value:
             self._gray = True
             self._white = False
-        elif self._gray:
-            print("Can not un-gray a Node.")
+        elif value is False:
+            print("Can not un-visit a Node.")
 
     @property
     def black(self):
@@ -79,13 +85,17 @@ class Node(object):
         if value:
             self._black = True
             self._white = False
-        elif self._black:
-            print("Can not un-black a Node.")
+        elif value is False:
+            print("Can not un-visit a Node.")
 
     @property
     def pred(self):
+        """
+        Stores the Node that linked to those one. If pred is self, return None
+        :return: Node, or None
+        """
         if self._pred == self:
-            return -1
+            return None
         else:
             return self._pred
 
@@ -259,4 +269,4 @@ if __name__ == "__main__":
                   }
 
     g = Graph(graph_data)
-    g.bfs(12)
+    g.bfs(6)
