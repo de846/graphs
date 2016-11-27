@@ -114,9 +114,11 @@ class Edge(object):
     def weight(self, value):
         if value >= 0.0:
             self._weight = value
+        else:
+            print("Edge weights should be positive.")
 
     def __repr__(self):
-        return "Edge({}, {}, {})".format(self._u, self._v, self._weight)
+        return "Edge({}, {})".format(self._u, self._v)
 
     def __str__(self):
         return str("{}, {}".format(self._u, self._v))
