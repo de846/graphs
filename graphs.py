@@ -176,8 +176,8 @@ class Graph(object):
     def _add_nodes(self, data):
         """
         This private method will create a dictionary of nodes for use with graph.
-        :param data: input dict data passed to Graph to init
-        :return: dict object with node data searchable by integer
+        :param data: input dict data passed to Graph to __init__
+        :return: dict, list
         """
         nodes = {}
         edge_list = []
@@ -193,7 +193,7 @@ class Graph(object):
     @property
     def nodes(self):
         """
-        Returns a dict of Nodes in this graph
+        Returns a dict of Nodes in this graph.
         :return: dict
         """
         return self._nodes
@@ -201,7 +201,7 @@ class Graph(object):
     @property
     def edges(self):
         """
-        Returns a list of Edges in this graph
+        Returns a list of Edges in this graph.
         :return: list
         """
         return self._edges
@@ -209,19 +209,26 @@ class Graph(object):
     @property
     def is_directed(self):
         """
-        Is this graph directed?
+        Check if this graph is directed.
         :return: boolean
         """
         return self._directed
 
     def __len__(self):
         """
-        Length of Graph should be quantity of Nodes
-        :return: count of nodes
+        Returns length of Graph (quantity of Nodes).
+        :return: int, count of nodes
         """
         return len(self._nodes)
 
     def bfs(self, starting_node):
+        """
+        Main Breadth-First Search workhorse. Uses a stack to keep track of what nodes
+        need to be visited, and searched both sides of edges to figure out the peers of
+        the current node and add them to the stack to be searched. Pop values off the front so we visit in order
+        :param starting_node: integer of starting node
+        :return: None (printing function)
+        """
         stack = []
         current = self._nodes[starting_node]
         if current:
@@ -248,6 +255,7 @@ class Graph(object):
                             print("Visited Node {}, with pred {}, and distance {}.".format(stack_node,
                                                                                            stack_node.pred,
                                                                                            stack_node.distance))
+                    # print(stack)
                     current.black = True
                     current = stack.pop(0)
 
