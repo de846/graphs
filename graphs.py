@@ -10,6 +10,7 @@ class Node(object):
         self._handled = False
         self._pred = None
         self._neighbors = []
+        self._distance = 0
 
     def _add_neighbor(self, other_node):
         """
@@ -28,6 +29,18 @@ class Node(object):
             return self._neighbors
         else:
             return None
+
+    @property
+    def distance(self):
+        """
+        Prints value of this Node
+        :return: int value of this Node
+        """
+        return self._distance
+
+    @distance.setter
+    def distance(self, value):
+        self._distance = value
 
     @property
     def value(self):
@@ -179,6 +192,37 @@ class Graph(object):
         """
         return len(self._nodes)
 
+    def bfs(self, starting_node):
+        stack = []
+        current = self._nodes[starting_node]
+        if current:
+            print("Starting BFS at Node {}".format(current))
+            for node in self._nodes:
+                for edge in self._edges:
+                    u = edge.u
+                    v = edge.v
+                    print("stack: {}".format(stack))
+                    if len(stack) >= 1:
+                        for stack_node in range(len(stack)):
+                            stack_node = stack.pop()
+                            stack_node.handled = True
+                            stack_node.pred = current
+                            stack_node.distance = current.distance + 1
+                            print("Visited Node {}, with pred {}, and distance {}.".format(stack_node, stack_node.pred, stack_node.distance))
+                    if current == u:
+                        if not u.handled:
+                            print("Found {} on left in Edge {}".format(u, edge))
+                            stack.append(v)
+                    if current == v:
+                        if not v.handled:
+                            print("Found {} on right of Edge {}".format(v, edge))
+                            stack.append(u)
+
+
+
+
+
+
 
 if __name__ == "__main__":
 
@@ -198,3 +242,4 @@ if __name__ == "__main__":
     }
 
     g = Graph(graph_data)
+    g.bfs(2)
